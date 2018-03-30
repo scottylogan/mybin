@@ -1,0 +1,18 @@
+#! /bin/sh
+
+PROTOS="ssl3 tls1 tls1_1 tls1_2"
+
+printf "%-16s %-8s %-8s %-8s %-8s\n" Host ${PROTOS}
+
+for host in $*; do
+  printf "%-16s" ${host%%.*}
+  for tls in ssl3 tls1 tls1_1 tls1_2; do
+    if openssl s_client -${tls} -connect ${host}:443 </dev/null >/dev/null 2>&1; then
+      printf " %-8s" OK
+    else
+      printf " %-8s" FAILED
+    fi
+  done
+  printf "\n"
+done
+
